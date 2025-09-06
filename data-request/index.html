@@ -1,9 +1,218 @@
+<!doctype html>
 <html lang="en">
-    <head>
-        <title>Strom: Data Request</title>
-    </head>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Request Your Data • strom</title>
+    <meta name="description" content="How to request a copy of your data from strom via email." />
+    <style>
+        :root {
+            --bg: #0b0f14;
+            --panel: #121821;
+            --text: #e7eef7;
+            --muted: #9fb3c8;
+            --accent: #5ab0ff;
+            --accent-2: #7be0b8;
+            --border: #1e2a38;
+            --ring: rgba(90,176,255,.35);
+        }
+        * { box-sizing: border-box; }
+        html, body { height: 100%; }
+        body {
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+            color: var(--text);
+            background: radial-gradient(1200px 600px at 80% -10%, rgba(90,176,255,.07), transparent 60%),
+            radial-gradient(900px 500px at 10% 110%, rgba(123,224,184,.06), transparent 60%),
+            var(--bg);
+            line-height: 1.55;
+        }
+        .container {
+            max-width: 840px;
+            margin: 0 auto;
+            padding: 48px 20px 72px;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .brand {
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            font-size: 1.05rem;
+            color: var(--muted);
+        }
+        .card {
+            background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.0));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.25);
+            backdrop-filter: blur(4px);
+        }
+        h1 {
+            font-size: clamp(1.6rem, 2.2vw + 1rem, 2.4rem);
+            line-height: 1.2;
+            margin: 0 0 10px 0;
+        }
+        p.lead {
+            color: var(--muted);
+            margin: 0 0 18px 0;
+            font-size: 1.05rem;
+        }
+        .cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(180deg, var(--accent), #3d87d1);
+            color: #0b1117;
+            padding: 14px 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            border: 0;
+            box-shadow: 0 8px 24px var(--ring);
+            transition: transform .06s ease, box-shadow .2s ease, filter .15s ease;
+        }
+        .cta:hover { transform: translateY(-1px); filter: brightness(1.05); }
+        .cta:focus { outline: 2px solid transparent; box-shadow: 0 0 0 4px var(--ring); }
+        .cta small { font-weight: 600; opacity: .9; }
+        .cta .icon { display: inline-block; width: 1.2em; height: 1.2em; }
 
-    <body>
+        section { margin-top: 26px; }
+        h2 { font-size: 1.15rem; margin: 0 0 10px 0; }
+        ul, ol { margin: 0 0 8px 18px; }
+        li { margin: 6px 0; }
+        code, pre {
+            background: #0e141c;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            color: #d9e6f6;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+            overflow-x: auto;
+        }
+        pre { white-space: pre-wrap; }
+        .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        @media (min-width: 720px) {
+            .grid { grid-template-columns: 1fr 1fr; }
+        }
+        .muted { color: var(--muted); }
+        .pill {
+            display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: .85rem; color: #0b1117;
+            background: linear-gradient(180deg, var(--accent-2), #3ea881);
+            font-weight: 700;
+        }
+        footer { margin-top: 36px; color: var(--muted); font-size: .9rem; }
+        .hr { height: 1px; background: var(--border); margin: 20px 0; }
+        a.inline { color: var(--accent); text-decoration: none; }
+        a.inline:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<div class="container" role="main">
+    <header>
+        <div class="brand" aria-label="strom">strom</div>
+        <span class="pill" aria-hidden="true">Data Requests</span>
+    </header>
 
-    </body>
+    <div class="card" aria-labelledby="title">
+        <h1 id="title">Request a Copy of Your Data</h1>
+        <p class="lead">You can request a copy of the personal data associated with your account by starting a conversation via email. This page explains what to include so we can verify your identity and respond efficiently.</p>
+        <p>
+            <a class="cta" href="mailto:strombearer@gmail.com?subject=Data%20Request%20-%20%5BYour%20Name%5D&body=Hello%20strom%20Team%2C%0A%0AI'd%20like%20to%20request%20a%20copy%20of%20my%20data.%0A%0AName%3A%20%0APrimary%20email%20on%20account%3A%20%0AUser%20ID%20(if%20known)%3A%20%0ARegion%2Fcountry%20of%20residence%3A%20%0A%0AI%20am%20requesting%3A%20%5BExport%20of%20my%20data%20%7C%20Deletion%20of%20my%20account%20data%20%7C%20Both%5D.%0A%0AOptional%20details%3A%20%0A-%20Date%20range%20for%20data%20(%5Bfrom%5D%20to%20%5Bto%5D)%0A-%20Specific%20datasets%20of%20interest%0A%0AThank%20you!">
+                <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm-.4 2L12 11.26 4.4 6h15.2ZM4 18V8.23l7.4 5a1 1 0 0 0 1.2 0L20 8.23V18H4Z"/></svg>
+<!--                Email us to start your request-->
+                <small>strombearer@gmail.com</small>
+            </a>
+        </p>
+    </div>
+
+    <section class="grid" aria-labelledby="howto">
+        <div class="card">
+            <h2 id="howto">What to include in your email</h2>
+            <ul>
+                <li>Your <strong>full name</strong> and the <strong>email address</strong> used for your account.</li>
+                <li>Your <strong>phone number</strong>.</li>
+                <li>Your <strong>Google Play account email</strong>.</li>
+                <li>Your <strong>region/country</strong> of residence.</li>
+                <li>The type of request: <em>data export</em>, <em>data deletion</em>, or <em>both</em>.</li>
+                <li>Any <strong>date ranges</strong> or <strong>specific datasets</strong> you want (optional).</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Identity verification</h2>
+            <p class="muted">To protect your privacy, we may ask you to re-verify your email address and provide limited additional information that helps us confirm ownership of the account.</p>
+            <ul>
+                <li>We will never ask for your password or full payment card details.</li>
+                <li>If you’re writing from a different email, we may ask you to confirm from the (GooglePlay) account email.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="grid" aria-labelledby="timeline">
+        <div class="card">
+            <h2 id="timeline">Timeline</h2>
+            <ul>
+                <li>We acknowledge your request by email and start verification.</li>
+                <li>Once verified, we begin processing. If your request is complex, we’ll keep you updated.</li>
+                <li>We deliver your data securely via a downloadable archive or share confirmation of deletion, as applicable.</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Format of your data</h2>
+            <p class="muted">Exports are provided in commonly used, machine‑readable formats whenever possible (for example, JSON or CSV in a zipped archive).</p>
+        </div>
+    </section>
+
+    <section class="card" aria-labelledby="template">
+        <h2 id="template">Email template (copy & paste)</h2>
+        <pre>To: strombearer@gmail.com
+Subject: Data Request - [Your Name]
+
+Hello Strom Team,
+
+I'd like to request a copy of my data.
+
+Name: [Your full name]
+Primary email on account: [your@email.example]
+Region/country of residence: [Your country]
+
+I am requesting: [Export of my data | Deletion of my account data | Both]
+
+Optional details:
+- Date range for data: [from] to [to]
+- Specific datasets of interest: [e.g., activity logs, profile, settings]
+
+Thank you,
+[Your Name]</pre>
+    </section>
+
+    <section class="grid" aria-labelledby="faq">
+        <div class="card">
+            <h2 id="faq">Questions we can help with</h2>
+            <ul>
+                <li>What personal data we hold about your account.</li>
+                <li>How to request corrections or updates.</li>
+                <li>How deletion works and what data we must retain (e.g., for fraud prevention or legal obligations).</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Contact</h2>
+            <p>Prefer to start right away? Click this link to email us:</p>
+            <p><a class="inline" href="mailto:strombearer@gmail.com?subject=Data%20Request%20-%20%5BYour%20Name%5D">strombearer@gmail.com
+</a></p>
+            <div class="hr"></div>
+            <p class="muted">If the mail link doesn’t work, open your email app and write to <strong>strombearer@gmail.com</strong> with the subject <em>“Data Request – [Your Name]”</em>.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>Last updated: September 6, 2025 • Strom</p>
+    </footer>
+</div>
+</body>
 </html>
