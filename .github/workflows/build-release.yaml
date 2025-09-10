@@ -8,10 +8,10 @@ on:
 jobs:
   linux-build:
     name: linux build
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         arch: [ x64, arm64 ]
+    runs-on: ${{ matrix.arch == 'x64' && 'ubuntu-latest' || 'ubuntu-22.04-arm' }}
     env:
       STROM_REPO_URL: ${{ secrets.STROM_REPO }}
       STROM_REPO_PAT: ${{ secrets.PAT }}
@@ -58,10 +58,10 @@ jobs:
 
   macos-build:
     name: macos build
-    runs-on: macos-latest
     strategy:
       matrix:
         arch: [ x64, arm64 ]
+    runs-on: ${{ matrix.arch == 'x64' && 'macos-13' || 'macos-latest' }}
     env:
       STROM_REPO_URL: ${{ secrets.STROM_REPO }}
       STROM_REPO_PAT: ${{ secrets.PAT }}
