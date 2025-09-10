@@ -100,7 +100,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: macos-${{ matrix.arch }}
-          path: strom_app/build/macos/Build/Products/Release/*.dmg
+          path: strom_app/build/macos/Build/Products/Release/dmg/*.dmg
 
   release:
     name: Create Release
