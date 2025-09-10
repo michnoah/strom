@@ -51,7 +51,7 @@ jobs:
         shell: bash
 
       - name: upload linux artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: linux-${{ matrix.arch }}
           path: strom_app/dist/
