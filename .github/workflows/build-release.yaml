@@ -42,8 +42,7 @@ jobs:
           chmod +x ./tool/build/install-linux-deps.sh
           sudo ./tool/build/install-linux-deps.sh
           chmod +x ./tool/build/setup-linux-env.sh
-          ./tool/build/setup-linux-env.sh
-          export PATH="$HOME/bin:$HOME/bin/flutter/bin:$HOME/bin/flutter/bin/cache/dart-sdk/bin:$PATH"
+          source ./tool/build/setup-linux-env.sh          
           make clean linux-build-release
         shell: bash
 
