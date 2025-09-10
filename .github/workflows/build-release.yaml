@@ -25,7 +25,7 @@ jobs:
 
       - name: clone strom
         run: |
-          git clone --recurse-submodules https://$STROM_REPO_PAT@${STROM_REPO_URL} strom_app
+          git clone --recurse-submodules https://${{ env.STROM_REPO_PAT }}@${{ env.STROM_REPO_URL }} strom_app
         working-directory: ${{ github.workspace }}
 
       - name: setup zig
