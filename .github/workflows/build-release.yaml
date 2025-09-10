@@ -23,6 +23,10 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
 
+      - name: configure git
+        run: |
+          git config --global url."https://${{ secrets.PAT }}@${{ secrets.GIT_ACCOUNT_URL }}".insteadOf "https://${{ secrets.GIT_ACCOUNT_URL }}"
+
       - name: clone strom
         run: |
           git clone --recurse-submodules https://${{ env.STROM_REPO_PAT }}@${{ env.STROM_REPO_URL }} strom_app
@@ -45,10 +49,6 @@ jobs:
           sudo ./tool/build/setup-linux-env.sh
           make clean linux-build-release
         shell: bash
-
-      - name: configure git
-        run: |
-          git config --global url."https://${{ secrets.PAT }}@${{ secrets.GIT_ACCOUNT_URL }}".insteadOf "https://${{ secrets.GIT_ACCOUNT_URL }}"
 
       - name: release
         uses: softprops/action-gh-release@v2
