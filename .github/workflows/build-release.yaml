@@ -1,0 +1,70 @@
+name: build & release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  linux-build-release:
+    name: linux build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [ x64, arm64 ]
+    env:
+      STROM_REPO_URL: ${{ secrets.STROM_REPO }}
+      STROM_REPO_PAT: ${{ secrets.PAT }}
+      APP_NAME: strom
+      FLUTTER_VERSION: 3.35.3
+      ZIG_VERSION: 0.15.1
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: clone strom
+        run: |
+          git clone --recurse-submodules https://$STROM_REPO_PAT@${STROM_REPO_URL} strom_app
+        working-directory: ${{ github.workspace }}
+
+      - name: setup zig
+        uses: mlugg/setup-zig@v2
+        with:
+          version: ${{ env.ZIG_VERSION }}
+
+      - name: setup flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: build
+        run: |
+          cd strom_app
+          chmod +x ./tool/build/setup-linux-env.sh
+          sudo ./tool/build/setup-linux-env.sh
+          make clean linux-build-release
+        shell: bash
+
+      - name: configure git
+        run: |
+          git config --global url."https://${{ secrets.PAT }}@${{ GIT_ACCOUNT_URL }}".insteadOf "https://${{ GIT_ACCOUNT_URL }}"
+
+      - name: release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            strom_app/dist/*.tar.gz
+            strom_app/dist/*.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
