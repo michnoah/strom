@@ -39,8 +39,10 @@ jobs:
       - name: build
         run: |
           cd strom_app
+          chmod +x ./tool/build/install-linux-deps.sh
+          sudo ./tool/build/install-linux-deps.sh
           chmod +x ./tool/build/setup-linux-env.sh
-          sudo ./tool/build/setup-linux-env.sh
+          ./tool/build/setup-linux-env.sh
           make clean linux-build-release
         shell: bash
 
