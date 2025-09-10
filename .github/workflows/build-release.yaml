@@ -16,7 +16,6 @@ jobs:
       STROM_REPO_URL: ${{ secrets.STROM_REPO }}
       STROM_REPO_PAT: ${{ secrets.PAT }}
       APP_NAME: strom
-      FLUTTER_VERSION: 3.35.3
       ZIG_VERSION: 0.15.1
 
     steps:
@@ -36,11 +35,6 @@ jobs:
         uses: mlugg/setup-zig@v2
         with:
           version: ${{ env.ZIG_VERSION }}
-
-      - name: setup flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
 
       - name: build
         run: |
