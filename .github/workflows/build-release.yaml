@@ -93,7 +93,7 @@ jobs:
         run: |
           echo "building for macOS ${{ matrix.arch }}"
           cd strom_app
-          make clean macos-build-release
+          make clean mac-build-release
         shell: bash
 
       - name: upload macos artifact
