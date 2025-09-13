@@ -89,6 +89,8 @@ jobs:
         run: |
           echo "building for macOS ${{ matrix.arch }}"
           cd strom_app
+          chmod +x ./tool/build/patch-macos.sh
+          ./tool/build/patch-macos.sh
           make clean mac-build-release
         shell: bash
 
