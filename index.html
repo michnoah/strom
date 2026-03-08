@@ -99,7 +99,9 @@
     :root{
       --bg:#1c1c1c;
       --card:#272727;
+      --accent: rgba(248, 209, 28, 200);
       --border:rgba(255,255,255,.08);
+      --highlight-bg:#2f2f2f;
       --text:#eaeaea;
       --shadow:0 10px 30px rgba(0,0,0,.35);
       --href:#5fb3ff;
@@ -119,6 +121,7 @@
 
 
     .container{
+
       max-width:1000px;
       margin:auto;
       padding:24px;
@@ -167,23 +170,44 @@
     }
 
     .hero{
-      padding-top: 10px;
-      padding-bottom: 10px;
       grid-area:hero;
       position:relative;
       overflow:hidden;
 
       background-size:cover;
       background-position:center;
+
+      display: grid;
+      grid-template-columns: auto 1fr;
+      grid-template-areas: "hero-icon hero-heading";
+
+      padding-bottom: 10px;
+      border-bottom: 1px dotted var(--border);
     }
 
-    .hero h1{
+    .hero .hero-icon{
+      grid-area:hero-icon;
+      background-image:url(./static/app_icon_1024.png);
+      background-size:contain;
+      background-repeat:no-repeat;
+      background-position:center;
+      width: 70px;
+      margin-right: 5px;
+    }
+
+    .hero .hero-heading{
+      grid-area:hero-heading;
+    }
+
+    .hero-heading h1{
       margin:0 0 8px 0;
       font-size:2rem;
+      color: var(--accent);
     }
 
-    .hero p{
+    .hero-heading p{
       opacity:.9;
+      margin:0;
     }
 
     .features{
@@ -286,8 +310,12 @@
     .download-card.highlight{
       /*border:2px solid #5fb3ff;*/
       padding:20px;
-      background:#2f2f2f;
+      background:var(--highlight-bg);
       transform:scale(1.02);
+    }
+
+    .download-card:hover{
+      background:var(--highlight-bg);
     }
 
     .download-card .heading{
@@ -298,6 +326,9 @@
       width:240px;
       display:block;
       margin:0 auto;
+    }
+    .badge img:hover{
+      cursor: pointer;
     }
 
     .downloads{
@@ -403,6 +434,10 @@
       background:#4a4a4a;
     }
 
+    #latest-release {
+      padding: 10px;
+    }
+
     .footer{
       text-align:center;
       padding:30px;
@@ -417,6 +452,11 @@
       color:var(--href-visited);
     }
 
+    hr.divider{
+      color:var(--border);
+      margin-bottom:20px;
+    }
+
   </style>
 </head>
 
@@ -424,9 +464,17 @@
 
 <div class="container">
 
-  <div class="card hero">
-    <h1>strøm.</h1>
-    <p>Lightweight, Cross-platform BitTorrent client designed for performance.</p>
+  <div class="hero">
+    <a class="hero-icon" href="/">
+      <div>
+      </div>
+    </a>
+    <div class="hero-heading">
+      <h1>
+        strøm.
+      </h1>
+      <p>Lightweight, Cross-platform BitTorrent client designed for performance.</p>
+    </div>
   </div>
 
   <div class="card features">
@@ -578,7 +626,7 @@
       </details>
     </div>
 
-    <hr/>
+    <hr class="divider"/>
 
     <div id="latest-release" class="download-card">
       <div>
