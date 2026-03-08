@@ -17,6 +17,7 @@ jobs:
       STROM_REPO_PAT: ${{ secrets.PAT }}
       APP_NAME: strom
       ZIG_VERSION: 0.15.2
+      FLUTTER_VERSION: 3.41.4
 
     steps:
       - name: checkout
@@ -37,6 +38,8 @@ jobs:
           version: ${{ env.ZIG_VERSION }}
 
       - name: build
+        env:
+          FLUTTER_VERSION: ${{ env.FLUTTER_VERSION }}
         run: |
           cd strom_app
           chmod +x ./tool/build/install-linux-deps.sh
@@ -62,7 +65,7 @@ jobs:
       STROM_REPO_URL: ${{ secrets.STROM_REPO }}
       STROM_REPO_PAT: ${{ secrets.PAT }}
       APP_NAME: strom
-      FLUTTER_VERSION: 3.41.2
+      FLUTTER_VERSION: 3.41.4
 
     steps:
       - name: checkout
@@ -102,12 +105,12 @@ jobs:
     name: Windows Build
     strategy:
       matrix:
-        arch: [ x64, arm64 ]
-    runs-on: ${{ matrix.arch == 'x64' && 'windows-latest' || 'windows-11-arm' }}
+        arch: [ x64]
+    runs-on: ${{ 'windows-latest' }}
     env:
       STROM_REPO_URL: ${{ secrets.STROM_REPO }}
       STROM_REPO_PAT: ${{ secrets.PAT }}
-      FLUTTER_VERSION: 3.41.2
+      FLUTTER_VERSION: 3.41.4
     defaults:
       run:
         shell: cmd
@@ -131,10 +134,20 @@ jobs:
           dotnet tool install --global wix --version 5.0.2
           "$env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-      - name: Set up Flutter
+      - name: Set up Flutter (x64)
+        if: matrix.arch == 'x64'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "${{ env.FLUTTER_VERSION }}"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+#      - name: Set up Flutter (ARM64)
+#        if: matrix.arch == 'arm64'
+#        shell: pwsh
+#        env:
+#          FLUTTER_VERSION: ${{ env.FLUTTER_VERSION }}
+#        run: |
+#          cd strom_app
+#          ./tool/build/setup-windows-env.ps1
 
       - name: Build Windows release
         shell: cmd
