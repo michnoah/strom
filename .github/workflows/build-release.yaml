@@ -186,10 +186,6 @@ jobs:
         with:
           name: windows-x64-build
           path: artifacts/windows/x64
-      - uses: actions/download-artifact@v5
-        with:
-          name: windows-arm64-build
-          path: artifacts/windows/arm64
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -201,6 +197,5 @@ jobs:
             artifacts/macos/x64/*
             artifacts/macos/arm64/*
             artifacts/windows/x64/*
-            artifacts/windows/arm64/*
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_PAT }}
