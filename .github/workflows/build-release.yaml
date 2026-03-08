@@ -103,7 +103,7 @@ jobs:
     strategy:
       matrix:
         arch: [ x64, arm64 ]
-    runs-on: ${{ matrix.arch == 'x64' && 'windows-latest' || 'windows-11-arm64' }}
+    runs-on: ${{ matrix.arch == 'x64' && 'windows-latest' || 'windows-11-arm' }}
     env:
       STROM_REPO_URL: ${{ secrets.STROM_REPO }}
       STROM_REPO_PAT: ${{ secrets.PAT }}
