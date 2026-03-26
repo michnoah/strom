@@ -92,9 +92,140 @@
       }
     }
 
+    function initMediaPreview() {
+      const previewRoot = document.getElementById("preview-media");
+      const previewImage = document.getElementById("preview-image");
+      const previewVideo = document.getElementById("preview-video");
+
+      if (!previewRoot || !previewImage || !previewVideo) {
+        return;
+      }
+
+      const desktopScreenshot = "./static/mac_screenshot.png";
+      const mobileScreenshot = "./static/mobile_screenshot.png";
+      const mobileQuery = window.matchMedia("(max-width: 700px)");
+      const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const flashDurationMs = 600;
+      const delayAfterFlashMs = 1700;
+      let flashTimer = null;
+      let playTimer = null;
+
+      function clearTimers() {
+        previewVideo.removeEventListener("canplay", playPreviewVideo);
+        if (flashTimer !== null) {
+          window.clearTimeout(flashTimer);
+          flashTimer = null;
+        }
+        if (playTimer !== null) {
+          window.clearTimeout(playTimer);
+          playTimer = null;
+        }
+      }
+
+      function setFallbackImage() {
+        previewImage.src = mobileQuery.matches ? mobileScreenshot : desktopScreenshot;
+      }
+
+      function showImageOnly() {
+        clearTimers();
+        setFallbackImage();
+        previewRoot.classList.remove("flash");
+        previewRoot.classList.remove("video-active");
+        previewVideo.pause();
+        previewVideo.currentTime = 0;
+      }
+
+      function canPlayH264() {
+        if (!previewVideo.canPlayType) {
+          return false;
+        }
+        const supportedTypes = [
+          'video/mp4; codecs="avc1.4D401E"',
+          'video/mp4; codecs="avc1.42E01E"',
+          "video/mp4",
+          'video/quicktime; codecs="h264"'
+        ];
+        return supportedTypes.some(function (type) {
+          return previewVideo.canPlayType(type) !== "";
+        });
+      }
+
+      function playPreviewVideo() {
+        previewVideo.autoplay = true;
+        previewVideo.defaultMuted = true;
+        previewVideo.muted = true;
+        previewVideo.playsInline = true;
+        const playPromise = previewVideo.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(function () {
+            showImageOnly();
+          });
+        }
+      }
+
+      function playWhenReady() {
+        if (previewVideo.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+          playPreviewVideo();
+          return;
+        }
+        previewVideo.addEventListener("canplay", playPreviewVideo, { once: true });
+      }
+
+      function startAnimatedPreview() {
+        clearTimers();
+        previewImage.src = desktopScreenshot;
+        previewRoot.classList.remove("video-active");
+        previewRoot.classList.add("flash");
+        previewVideo.pause();
+        previewVideo.currentTime = 0;
+        previewVideo.autoplay = false;
+        previewVideo.removeAttribute("autoplay");
+        previewVideo.defaultMuted = true;
+        previewVideo.muted = true;
+        previewVideo.playsInline = true;
+        previewVideo.preload = "auto";
+        previewVideo.load();
+
+        flashTimer = window.setTimeout(function () {
+          previewRoot.classList.remove("flash");
+          playTimer = window.setTimeout(function () {
+            playWhenReady();
+          }, delayAfterFlashMs);
+        }, flashDurationMs);
+      }
+
+      function updatePreviewMode() {
+        if (mobileQuery.matches || reducedMotionQuery.matches || !canPlayH264()) {
+          showImageOnly();
+          return;
+        }
+        startAnimatedPreview();
+      }
+
+      previewVideo.addEventListener("playing", function () {
+        if (!mobileQuery.matches && !reducedMotionQuery.matches) {
+          previewRoot.classList.add("video-active");
+        }
+      });
+
+      previewVideo.addEventListener("error", function () {
+        showImageOnly();
+      });
+
+      previewVideo.addEventListener("ended", function () {
+        previewVideo.currentTime = 0;
+        playPreviewVideo();
+      });
+
+      mobileQuery.addEventListener("change", updatePreviewMode);
+      reducedMotionQuery.addEventListener("change", updatePreviewMode);
+      updatePreviewMode();
+    }
+
     window.onload = function () {
       highlightPlatform();
       registerEvents();
+      initMediaPreview();
     }
   </script>
 
@@ -126,7 +257,7 @@
 
     .container{
 
-      max-width:1000px;
+      max-width:1200px;
       margin:auto;
       padding:24px;
 
@@ -135,31 +266,22 @@
 
       grid-template-areas:
     "hero"
+    "preview"
     "downloads"
     "features";
 
       gap:20px;
     }
-    @media (min-width:700px){
-
-      .container{
-        grid-template-columns:1fr;
-        grid-template-areas:
-      "hero"
-      "downloads"
-      "features";
-      }
-
-    }
 
     @media (min-width:900px){
 
       .container{
-        grid-template-columns:2fr 1fr;
+        grid-template-columns:minmax(0, 1fr) 330px;
 
         grid-template-areas:
       "hero hero"
-      "features downloads";
+      "preview downloads"
+      "features features";
       }
 
     }
@@ -341,6 +463,92 @@
       padding-bottom:16px;
     }
 
+    .preview{
+      grid-area:preview;
+      padding:20px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(248, 209, 28, .14), transparent 55%),
+        linear-gradient(160deg, #222 0%, #2d2d2d 100%);
+    }
+
+    .preview-viewport{
+      position:relative;
+      width:100%;
+      aspect-ratio:1594 / 1260;
+      border-radius:14px;
+      overflow:hidden;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, .06), rgba(0, 0, 0, .18));
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, .05),
+        0 20px 34px rgba(0, 0, 0, .35);
+    }
+
+    .preview-viewport::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:rgba(255, 255, 255, .95);
+      opacity:0;
+      pointer-events:none;
+    }
+
+    .preview-viewport.flash::after{
+      animation:screen-flash .6s ease-out;
+    }
+
+    .preview-image,
+    .preview-video{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      object-position:center;
+      filter:drop-shadow(0 12px 28px rgba(0, 0, 0, .45));
+      transition:opacity .45s ease;
+      border-radius:14px;
+    }
+
+    .preview-image{
+      opacity:1;
+    }
+
+    .preview-video{
+      opacity:0;
+      background:#111;
+    }
+
+    .preview-viewport.video-active .preview-video{
+      opacity:1;
+    }
+
+    .preview-viewport.video-active .preview-image{
+      opacity:0;
+    }
+
+    @keyframes screen-flash {
+      0%{
+        opacity:0;
+      }
+      12%{
+        opacity:.96;
+      }
+      100%{
+        opacity:0;
+      }
+    }
+
+    @media (max-width:700px){
+      .preview{
+        padding:14px;
+      }
+
+      .preview-viewport{
+        aspect-ratio:1280 / 2856;
+      }
+    }
+
     .download-card{
       margin-bottom:16px;
       text-align:center;
@@ -481,51 +689,25 @@
     </div>
   </div>
 
-  <div class="card features">
-
-    <h3>Features</h3>
-
-    <ul>
-
-      <li class="torrent">BitTorrent extensions
-        <ul>
-          <li><i class="fa-solid fa-chart-gantt"></i>DHT — Distributed Hash Table</li>
-          <li><i class="fa-solid fa-people-group"></i>PEX — Peer Exchange</li>
-          <li><i class="fa-solid fa-magnet"></i>Magnet Links</li>
-        </ul>
-      </li>
-
-      <li class="network">UPnP support</li>
-
-      <li class="cpu">
-        Hardware-assisted hashing <br/>
-        Android: <a class="ext-link" href="https://developer.android.com/ndk/guides/cpu-arm-neon" target="_blank">NEON SIMD instructions</a>
-        on ARMv7 and ARMv8 CPUs<br/>
-        macOS: <a class="ext-link" href="https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/Common%20Crypto.3cc.html" target="_blank">CommonCrypto</a><br/>
-        Windows: <a class="ext-link" href="https://docs.microsoft.com/en-us/windows/win32/api/bcrypt/nf-bcrypt-bcrypthashdata" target="_blank">BCRYPT</a>
-      </li>
-
-      <li class="file">Memory mapped file I/O</li>
-
-      <li class="memory">Zero-copy memory architecture
-        <ul>
-          <li><i class="fa-solid fa-download"></i>Download: Network buffer → mmap disk write</li>
-          <li><i class="fa-solid fa-upload"></i>Upload: mmap disk read → network buffer</li>
-        </ul>
-      </li>
-
-      <li class="security">
-        Complete protocol rewrite in a memory-safe language
-      </li>
-
-      <li class="mobile">
-        Optimized CPU and memory footprint for mobile devices
-      </li>
-
-      <li class="ui">Modern minimal UI</li>
-
-    </ul>
-
+  <div class="card preview">
+    <div id="preview-media" class="preview-viewport">
+      <img
+        id="preview-image"
+        class="preview-image"
+        src="./static/mac_screenshot.png"
+        alt="Strøm app screenshot preview">
+      <video
+        id="preview-video"
+        class="preview-video"
+        muted
+        playsinline
+        webkit-playsinline="true"
+        loop
+        preload="auto">
+        <source src="./static/strom_recording.mp4" type="video/mp4">
+        <source src="./static/strom_recording.mov" type="video/quicktime">
+      </video>
+    </div>
   </div>
 
   <div class="card downloads">
@@ -644,6 +826,53 @@
         </a>
       </div>
     </div>
+
+  </div>
+
+  <div class="card features">
+
+    <h3>Features</h3>
+
+    <ul>
+
+      <li class="torrent">BitTorrent extensions
+        <ul>
+          <li><i class="fa-solid fa-chart-gantt"></i>DHT — Distributed Hash Table</li>
+          <li><i class="fa-solid fa-people-group"></i>PEX — Peer Exchange</li>
+          <li><i class="fa-solid fa-magnet"></i>Magnet Links</li>
+        </ul>
+      </li>
+
+      <li class="network">UPnP support</li>
+
+      <li class="cpu">
+        Hardware-assisted hashing <br/>
+        Android: <a class="ext-link" href="https://developer.android.com/ndk/guides/cpu-arm-neon" target="_blank">NEON SIMD instructions</a>
+        on ARMv7 and ARMv8 CPUs<br/>
+        macOS: <a class="ext-link" href="https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/Common%20Crypto.3cc.html" target="_blank">CommonCrypto</a><br/>
+        Windows: <a class="ext-link" href="https://docs.microsoft.com/en-us/windows/win32/api/bcrypt/nf-bcrypt-bcrypthashdata" target="_blank">BCRYPT</a>
+      </li>
+
+      <li class="file">Memory mapped file I/O</li>
+
+      <li class="memory">Zero-copy memory architecture
+        <ul>
+          <li><i class="fa-solid fa-download"></i>Download: Network buffer → mmap disk write</li>
+          <li><i class="fa-solid fa-upload"></i>Upload: mmap disk read → network buffer</li>
+        </ul>
+      </li>
+
+      <li class="security">
+        Complete protocol rewrite in a memory-safe language
+      </li>
+
+      <li class="mobile">
+        Optimized CPU and memory footprint for mobile devices
+      </li>
+
+      <li class="ui">Modern minimal UI</li>
+
+    </ul>
 
   </div>
 
