@@ -113,8 +113,8 @@ jobs:
     name: Windows Build
     strategy:
       matrix:
-        arch: [ x64]
-    runs-on: ${{ 'windows-latest' }}
+        arch: [x64, arm64]
+    runs-on: ${{ matrix.arch == 'x64' && 'windows-latest' || 'windows-11-arm' }}
     env:
       STROM_REPO_URL: ${{ secrets.STROM_REPO }}
       STROM_REPO_PAT: ${{ secrets.PAT }}
@@ -148,14 +148,13 @@ jobs:
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
 
-#      - name: Set up Flutter (ARM64)
-#        if: matrix.arch == 'arm64'
-#        shell: pwsh
-#        env:
-#          FLUTTER_VERSION: ${{ env.FLUTTER_VERSION }}
-#        run: |
-#          cd strom_app
-#          ./tool/build/setup-windows-env.ps1
+      - name: Set up Flutter (ARM64)
+        if: matrix.arch == 'arm64'
+        shell: pwsh
+        env:
+          FLUTTER_VERSION: ${{ env.FLUTTER_VERSION }}
+        run: |
+          ./tool/build/setup-windows-env.ps1
 
       - name: Build Windows release
         shell: cmd
