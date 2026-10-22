@@ -154,6 +154,7 @@ jobs:
         env:
           FLUTTER_VERSION: ${{ env.FLUTTER_VERSION }}
         run: |
+          cd strom_app
           ./tool/build/setup-windows-env.ps1
 
       - name: Build Windows release
