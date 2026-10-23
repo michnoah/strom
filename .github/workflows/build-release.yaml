@@ -51,6 +51,7 @@ jobs:
 
       - name: Build Linux Release
         run: |
+          cd strom_app
           make clean linux-build-release
         shell: bash
 
