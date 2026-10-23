@@ -34,7 +34,7 @@
   <link rel="stylesheet"
         href="./static/fontawesome/css/all.min.css">
   <script type="text/javascript">
-    window.latestVersion = "1.1.7+44";
+    window.latestVersion = "1.1.8+45";
     window.latestReleaseLink = "https://github.com/michnoah/strom/releases/latest";
 
     function highlightPlatform() {
@@ -777,11 +777,20 @@
         <div class="options">
           <a href="#" onclick="downloadRelease('windows', 'strom-setup-x64', 'exe')">
             <i class="fa-solid fa-file-arrow-down"></i>
-            (.exe) Windows Installer
+            (.exe) Windows Installer x86-64
           </a>
           <a href="#" onclick="downloadRelease('windows', 'strom-x64', 'zip')">
             <i class="fa-solid fa-file-zipper"></i>
-            (.zip) Windows
+            (.zip) Windows x86-64
+          </a>
+
+          <a href="#" onclick="downloadRelease('windows', 'strom-setup-arm64', 'exe')">
+            <i class="fa-solid fa-file-arrow-down"></i>
+            (.exe) Windows Installer ARM64
+          </a>
+          <a href="#" onclick="downloadRelease('windows', 'strom-arm64', 'zip')">
+            <i class="fa-solid fa-file-zipper"></i>
+            (.zip) Windows ARM64
           </a>
         </div>
 
