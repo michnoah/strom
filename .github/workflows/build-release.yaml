@@ -17,12 +17,12 @@ jobs:
       STROM_REPO_URL: ${{ secrets.STROM_REPO }}
       STROM_REPO_PAT: ${{ secrets.PAT }}
       APP_NAME: strom
-      ZIG_VERSION: 0.15.2
-      FLUTTER_VERSION: 3.44.6
+      ZIG_VERSION: 0.17.0
+      FLUTTER_VERSION: 3.47.7
 
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: configure git
         run: |
@@ -70,7 +70,7 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: configure git
         run: |
@@ -125,7 +125,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Configure git
         run: |
