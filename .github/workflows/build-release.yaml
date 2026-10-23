@@ -24,10 +24,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v7
 
-      - name: configure git
-        run: |
-          git config --global url."https://${{ secrets.PAT }}@${{ secrets.GIT_ACCOUNT_URL }}".insteadOf "https://${{ secrets.GIT_ACCOUNT_URL }}"
-
       - name: clone strom
         run: |
           git clone --recurse-submodules https://${{ env.STROM_REPO_PAT }}@${{ env.STROM_REPO_URL }} strom_app
@@ -38,7 +34,7 @@ jobs:
         with:
           version: ${{ env.ZIG_VERSION }}
 
-      - name: build
+      - name: Set up Linux build environment
         env:
           FLUTTER_VERSION: ${{ env.FLUTTER_VERSION }}
         run: |
@@ -46,7 +42,15 @@ jobs:
           chmod +x ./tool/build/install-linux-deps.sh
           sudo ./tool/build/install-linux-deps.sh
           chmod +x ./tool/build/setup-linux-env.sh
-          source ./tool/build/setup-linux-env.sh          
+          ./tool/build/setup-linux-env.sh
+        shell: bash
+
+      - name: configure git
+        run: |
+          git config --global url."https://${{ secrets.PAT }}@${{ secrets.GIT_ACCOUNT_URL }}".insteadOf "https://${{ secrets.GIT_ACCOUNT_URL }}"
+
+      - name: Build Linux Release
+        run: |
           make clean linux-build-release
         shell: bash
 
